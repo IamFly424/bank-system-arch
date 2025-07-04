@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: bank-user-service
+  config:
+    import: "configserver:"
+  cloud:
+    config:
+      uri: http://bank-config-server:9000

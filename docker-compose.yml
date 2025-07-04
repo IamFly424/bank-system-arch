@@ -1,0 +1,61 @@
+services:
+  bank-postgres-user:
+    image: postgres:latest
+    container_name: bank_postgres_user
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: iamfly
+      POSTGRES_PASSWORD: iamfly
+      POSTGRES_DB: user_db
+    networks:
+      - bank-system
+
+
+
+  bank-user-service:
+    image: bank-user-service:latest
+    container_name: bank-user-service
+    ports:
+      - "8000:8000"
+    networks:
+      - bank-system
+
+  bank-config-server:
+    image: bank-config-server:latest
+    container_name: bank-config-server
+    restart: always
+    networks:
+      - bank-system
+    ports:
+      - "9000:9000"
+
+  bank-eureka-server:
+    image: bank-eureka-server:latest
+    container_name: bank-eureka-server
+    restart: always
+    networks:
+      - bank-system
+    ports:
+      - "9002:8761"
+    depends_on:
+      - bank-config-server
+
+  bank-api-gateway:
+    image: bank-api-gateway:latest
+    container_name: bank-api-gateway
+    restart: always
+    networks:
+      - bank-system
+    ports:
+      - "9001:9001"
+    depends_on:
+      - bank-config-server
+      - bank-eureka-server
+
+
+
+networks:
+  bank-system:
+    driver: bridge
